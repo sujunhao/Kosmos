@@ -74,13 +74,22 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
+    # Testing
     "pytest>=7.4.0",
     "pytest-asyncio>=0.21.0",
     "pytest-cov>=4.1.0",
     "pytest-mock>=3.12.0",
+    "pytest-timeout>=2.2.0",
+    "pytest-xdist>=3.5.0",  # Parallel test execution
+    "responses>=0.24.0",     # Mock HTTP responses
+    "freezegun>=1.4.0",      # Mock datetime
+    "faker>=22.0.0",         # Generate fake data for tests
+
+    # Code quality
     "black>=23.0.0",
     "ruff>=0.1.0",
     "mypy>=1.7.0",
+    "pre-commit>=3.6.0",
 ]
 
 router = [
