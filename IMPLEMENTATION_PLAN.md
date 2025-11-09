@@ -20,10 +20,10 @@
 
 ## Project Status Dashboard
 
-**Current Phase**: Phase 9 In Progress 🔄 (79% - see checkpoint v5)
+**Current Phase**: Phase 9 In Progress 🔄 (79% implementation, 22% testing - see checkpoint v6)
 **Last Updated**: 2025-11-09
-**Overall Progress**: ~80% (211 + 27 = 238/285 tasks)
-**Checkpoint**: docs/PHASE_9_CHECKPOINT_2025-11-09_v5.md (Fifth checkpoint - Cross-domain integration complete)
+**Overall Progress**: ~80% (238/285 implementation tasks, 80/365 test tasks)
+**Checkpoint**: docs/PHASE_9_CHECKPOINT_2025-11-09_v6.md (Testing checkpoint - 80 tests implemented, 60 passing)
 **Previous Completion**: docs/PHASE_8_COMPLETION.md
 
 ---
@@ -498,8 +498,8 @@
 ---
 
 ## Phase 9: Multi-Domain Support
-**Status**: 🔄 In Progress | **Progress**: 27/34 tasks (79%)
-**Checkpoint**: docs/PHASE_9_CHECKPOINT_2025-11-09_v5.md (Cross-domain integration complete)
+**Status**: 🔄 In Progress | **Progress**: 27/34 tasks (79% implementation, 22% testing)
+**Checkpoint**: docs/PHASE_9_CHECKPOINT_2025-11-09_v6.md (Testing in progress: 80/365 tests done)
 
 **Note**: Reference domain roadmaps created in Phase 0.3 (`docs/domain-roadmaps/`) for methodology and tool guidance based on kosmos-figures repository analysis.
 
@@ -548,14 +548,19 @@
 **Key Files**: `kosmos/experiments/templates/biology/` ✅ (complete), `kosmos/experiments/templates/neuroscience/` ✅ (complete), `kosmos/experiments/templates/materials/` ✅ (complete)
 
 ### 9.5 Testing & Documentation
-- [ ] Domain router tests (~500 lines, 40 tests)
-- [ ] Biology domain tests (4 files, ~100 tests)
-- [ ] Neuroscience domain tests (4 files, ~85 tests)
-- [ ] Materials domain tests (3 files, ~85 tests)
-- [ ] Multi-domain integration tests (15 tests)
+- [ ] Domain router tests (~600 lines, 43 tests) - Complete but 27 failures, needs fixes <!-- In progress: see checkpoint v6 -->
+- [ ] Biology domain tests (4 files, 140 tests) - 80/140 done (57%)
+  - [x] Biology ontology tests (30 tests) - ✅ ALL PASSING
+  - [x] Biology API tests (50 tests) - ⚠️ 30/50 passing (needs attribute fixes)
+  - [ ] Biology metabolomics tests (30 tests) - stub exists <!-- START HERE -->
+  - [ ] Biology genomics tests (30 tests) - stub exists
+- [ ] Neuroscience domain tests (4 files, 115 tests) - stubs exist <!-- In progress: see checkpoint v6 -->
+- [ ] Materials domain tests (3 files, 95 tests) - stubs exist <!-- In progress: see checkpoint v6 -->
+- [ ] Multi-domain integration tests (15 tests) - stub exists <!-- In progress: see checkpoint v6 -->
 - [ ] Create PHASE_9_COMPLETION.md
 
-**Key Files**: `tests/unit/core/test_domain_router.py`, `tests/unit/domains/`, `tests/integration/`
+**Testing Progress**: 80/365 tests implemented (22%), 60/80 passing (75%)
+**Key Files**: `tests/unit/domains/biology/test_ontology.py` ✅, `test_apis.py` ⚠️, `tests/unit/domains/`, `tests/integration/`
 
 ---
 
