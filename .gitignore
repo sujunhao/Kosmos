@@ -6,6 +6,10 @@ output.txt
 # Env
 .env
 
+# Claude Code settings (keep commands/ directory)
+.claude/settings.local.json
+.claude/*.json
+
 # Editors
 .project
 .settings
