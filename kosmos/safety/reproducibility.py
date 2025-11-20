@@ -1,5 +1,6 @@
 """
 Reproducibility management and validation.
+from kosmos.utils.compat import model_to_dict
 
 Implements:
 - Random seed management
@@ -47,7 +48,7 @@ class EnvironmentSnapshot(BaseModel):
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
-        return self.model_dump()
+        return model_to_dict(self)
 
     def get_hash(self) -> str:
         """Get hash of environment for comparison."""

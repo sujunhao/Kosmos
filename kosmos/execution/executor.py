@@ -1,5 +1,6 @@
 """
 Code execution engine.
+from kosmos.utils.compat import model_to_dict
 
 Executes generated Python code safely with output capture, error handling, and retry logic.
 Supports both direct execution and Docker-based sandboxed execution.
@@ -63,7 +64,7 @@ class ExecutionResult:
         # Include profile data if available
         if self.profile_result:
             try:
-                result['profile_data'] = self.profile_result.model_dump()
+                result['profile_data'] = self.model_to_dict(profile_result)
             except Exception:
                 result['profile_data'] = None
 

@@ -13,6 +13,7 @@ from datetime import datetime
 
 from kosmos.agents.base import BaseAgent, AgentMessage, MessageType, AgentStatus
 from kosmos.core.llm import get_client
+from kosmos.utils.compat import model_to_dict
 from kosmos.core.prompts import HYPOTHESIS_GENERATOR
 from kosmos.models.hypothesis import (
     Hypothesis,
@@ -117,7 +118,7 @@ class HypothesisGeneratorAgent(BaseAgent):
                     type=MessageType.RESPONSE,
                     from_agent=self.agent_id,
                     to_agent=message.from_agent,
-                    content={"response": response.model_dump()},
+                    content={"response": model_to_dict(response)},
                     correlation_id=message.correlation_id
                 )
 

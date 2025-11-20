@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Dict, List, Any, Optional
 
 from kosmos.models.safety import (
+from kosmos.utils.compat import model_to_dict
     SafetyReport, SafetyViolation, ViolationType, RiskLevel,
     EthicalGuideline, ApprovalRequest, ApprovalStatus
 )
@@ -448,7 +449,7 @@ class CodeValidator:
             reason_for_approval=reason,
             context={
                 "code": code[:500],  # First 500 chars
-                "report": report.model_dump(),
+                "report": model_to_dict(report),
                 **(context or {})
             }
         )

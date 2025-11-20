@@ -9,6 +9,8 @@ from pathlib import Path
 from typing import Optional
 import logging
 
+logger = logging.getLogger(__name__)
+
 import typer
 from rich.console import Console
 from rich.markdown import Markdown

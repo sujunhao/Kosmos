@@ -18,6 +18,7 @@ import hashlib
 from kosmos.models.hypothesis import Hypothesis
 from kosmos.models.result import ExperimentResult
 from kosmos.models.experiment import ExperimentProtocol
+from kosmos.utils.compat import model_to_dict
 
 logger = logging.getLogger(__name__)
 
@@ -586,4 +587,4 @@ class MemoryStore:
                 for memory in memories
             ]
 
-        return [memory.model_dump() for memory in memories]
+        return [model_to_dict(memory) for memory in memories]

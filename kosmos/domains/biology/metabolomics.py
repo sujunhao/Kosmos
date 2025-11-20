@@ -35,6 +35,7 @@ from scipy import stats
 from pydantic import BaseModel, Field
 
 from kosmos.domains.biology.apis import KEGGClient
+from kosmos.utils.compat import model_to_dict
 
 
 # Enums for metabolite classification
@@ -401,7 +402,7 @@ class MetabolomicsAnalyzer:
             return []
 
         # Convert to DataFrame for easier grouping
-        results_df = pd.DataFrame([r.model_dump() for r in results])
+        results_df = pd.DataFrame([model_to_dict(r) for r in results])
 
         # Filter by category if specified
         if category_filter:

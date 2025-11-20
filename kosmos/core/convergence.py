@@ -16,6 +16,7 @@ import numpy as np
 from kosmos.core.workflow import ResearchPlan
 from kosmos.models.hypothesis import Hypothesis
 from kosmos.models.result import ExperimentResult
+from kosmos.utils.compat import model_to_dict
 
 logger = logging.getLogger(__name__)
 
@@ -653,4 +654,4 @@ Research saturation: {self.metrics.saturation_ratio:.1%}
 
     def get_metrics_dict(self) -> Dict[str, Any]:
         """Get metrics as dictionary."""
-        return self.metrics.model_dump()
+        return self.model_to_dict(metrics)

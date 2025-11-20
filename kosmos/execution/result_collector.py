@@ -17,6 +17,7 @@ import numpy as np
 import pandas as pd
 
 from kosmos.models.result import (
+from kosmos.utils.compat import model_to_dict
     ExperimentResult, ResultStatus, ExecutionMetadata,
     StatisticalTestResult, VariableResult, ResultExport
 )
@@ -452,7 +453,7 @@ class ResultCollector:
                     id=result.id,
                     experiment_id=result.experiment_id,
                     data=result_dict,
-                    statistical_tests={test.test_name: test.model_dump() for test in result.statistical_tests},
+                    statistical_tests={test.test_name: model_to_dict(test) for test in result.statistical_tests},
                     p_value=result.primary_p_value,
                     effect_size=result.primary_effect_size,
                     supports_hypothesis=result.supports_hypothesis,

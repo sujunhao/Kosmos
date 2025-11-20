@@ -1,5 +1,6 @@
 """
 Experiment result data models.
+from kosmos.utils.compat import model_to_dict
 
 Defines Pydantic models for experiment results, extending the database Result model
 with validation and structured data handling.
@@ -238,7 +239,7 @@ class ExperimentResult(BaseModel):
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for database storage."""
-        return self.model_dump(mode='json', exclude_none=True)
+        return model_to_dict(self, mode='json', exclude_none=True)
 
     def to_json(self) -> str:
         """Convert to JSON string."""

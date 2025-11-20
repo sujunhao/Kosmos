@@ -15,6 +15,7 @@ from datetime import datetime
 from kosmos.agents.base import BaseAgent, AgentMessage, MessageType, AgentStatus
 from kosmos.core.llm import get_client
 from kosmos.core.prompts import EXPERIMENT_DESIGNER
+from kosmos.utils.compat import model_to_dict
 from kosmos.models.hypothesis import Hypothesis, ExperimentType
 from kosmos.models.experiment import (
     ExperimentProtocol,
@@ -139,7 +140,7 @@ class ExperimentDesignerAgent(BaseAgent):
                     type=MessageType.RESPONSE,
                     from_agent=self.agent_id,
                     to_agent=message.from_agent,
-                    content={"response": response.model_dump()},
+                    content={"response": model_to_dict(response)},
                     correlation_id=message.correlation_id
                 )
 
@@ -749,4 +750,4 @@ Return ONLY a JSON object with suggested enhancements (keep it concise).
         else:
             templates = list(self.template_registry)
 
-        return [template.metadata.model_dump() for template in templates]
+        return [model_to_dict(template.metadata) for template in templates]

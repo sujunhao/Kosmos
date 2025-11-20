@@ -16,6 +16,7 @@ import logging
 
 from kosmos.models.result import ExperimentResult, ResultStatus
 from kosmos.models.hypothesis import Hypothesis
+from kosmos.utils.compat import model_to_dict
 
 logger = logging.getLogger(__name__)
 
@@ -185,7 +186,7 @@ class FeedbackLoop:
                 source=result.id,
                 data={
                     "pattern_id": pattern_id,
-                    "pattern": pattern.model_dump(),
+                    "pattern": model_to_dict(pattern),
                     "action": "increase_priority",
                     "target": "similar_hypotheses"
                 },
@@ -233,7 +234,7 @@ class FeedbackLoop:
                 source=result.id,
                 data={
                     "pattern_id": pattern_id,
-                    "pattern": pattern.model_dump(),
+                    "pattern": model_to_dict(pattern),
                     "action": "avoid_pattern",
                     "recommended_fixes": pattern.recommended_fixes
                 },
@@ -284,7 +285,7 @@ class FeedbackLoop:
             },
             experiment_design={
                 "test_type": result.primary_test,
-                "sample_size": result.metadata.model_dump() if hasattr(result, 'metadata') else {}
+                "sample_size": result.model_to_dict(metadata) if hasattr(result, 'metadata') else {}
             },
             statistical_approach={
                 "p_value": result.primary_p_value,

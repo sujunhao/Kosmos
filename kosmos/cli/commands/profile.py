@@ -1,5 +1,6 @@
 """
 Profile command for performance analysis.
+from kosmos.utils.compat import model_to_dict
 
 Displays profiling results with Rich formatting for easy analysis
 of execution performance, memory usage, and bottlenecks.
@@ -470,7 +471,7 @@ def _save_profile_output(profile: ProfileResult, output_path: Path):
     """Save profile data to file."""
     try:
         with open(output_path, 'w') as f:
-            json.dump(profile.model_dump(), f, indent=2, default=str)
+            json.dump(model_to_dict(profile), f, indent=2, default=str)
         console.print(
             f"\n[green]✓[/green] Profile data saved to {output_path}",
             style="bold"

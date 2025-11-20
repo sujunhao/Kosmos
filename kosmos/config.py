@@ -11,6 +11,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from pathlib import Path
 import os
 
+from kosmos.utils.compat import model_to_dict
+
 
 def parse_comma_separated(v):
     """Parse comma-separated string into list for Pydantic V2 compatibility."""
@@ -782,26 +784,26 @@ class KosmosConfig(BaseSettings):
         """
         config_dict = {
             "llm_provider": self.llm_provider,
-            "claude": self.claude.model_dump(),
-            "research": self.research.model_dump(),
-            "database": self.database.model_dump(),
-            "redis": self.redis.model_dump(),
-            "logging": self.logging.model_dump(),
-            "literature": self.literature.model_dump(),
-            "vector_db": self.vector_db.model_dump(),
-            "neo4j": self.neo4j.model_dump(),
-            "safety": self.safety.model_dump(),
-            "performance": self.performance.model_dump(),
-            "monitoring": self.monitoring.model_dump(),
-            "development": self.development.model_dump(),
-            "world_model": self.world_model.model_dump(),
+            "claude": model_to_dict(self.claude),
+            "research": model_to_dict(self.research),
+            "database": model_to_dict(self.database),
+            "redis": model_to_dict(self.redis),
+            "logging": model_to_dict(self.logging),
+            "literature": model_to_dict(self.literature),
+            "vector_db": model_to_dict(self.vector_db),
+            "neo4j": model_to_dict(self.neo4j),
+            "safety": model_to_dict(self.safety),
+            "performance": model_to_dict(self.performance),
+            "monitoring": model_to_dict(self.monitoring),
+            "development": model_to_dict(self.development),
+            "world_model": model_to_dict(self.world_model),
         }
 
         # Add provider-specific configs if present
         if self.anthropic:
-            config_dict["anthropic"] = self.anthropic.model_dump()
+            config_dict["anthropic"] = model_to_dict(self.anthropic)
         if self.openai:
-            config_dict["openai"] = self.openai.model_dump()
+            config_dict["openai"] = model_to_dict(self.openai)
 
         return config_dict
 
