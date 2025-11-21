@@ -11,6 +11,7 @@ from typing import Dict, Any, Optional, List
 from datetime import datetime
 import logging
 import asyncio
+import concurrent.futures
 import threading
 from contextlib import contextmanager
 
@@ -1289,22 +1290,27 @@ Provide a structured, actionable plan in 2-3 paragraphs.
                     hypothesis_batch = untested[:batch_size]
 
                     try:
-                        # Run async evaluation
+                        # Run async evaluation with timeout
+                        logger.info(f"Starting concurrent evaluation of {len(hypothesis_batch)} hypotheses")
                         try:
                             # Check if there's already a running event loop
                             loop = asyncio.get_running_loop()
-                            # If we're already in an async context, await directly
-                            evaluations = asyncio.create_task(
-                                self.evaluate_hypotheses_concurrently(hypothesis_batch)
-                            )
-                            evaluations = asyncio.run_coroutine_threadsafe(
+                            # If we're already in an async context, use run_coroutine_threadsafe with timeout
+                            future = asyncio.run_coroutine_threadsafe(
                                 self.evaluate_hypotheses_concurrently(hypothesis_batch), loop
-                            ).result()
+                            )
+                            # Add timeout to prevent indefinite blocking (5 minutes default)
+                            timeout_seconds = 300
+                            evaluations = future.result(timeout=timeout_seconds)
+                            logger.info(f"Concurrent hypothesis evaluation completed")
                         except RuntimeError:
                             # No running loop, use asyncio.run
                             evaluations = asyncio.run(
                                 self.evaluate_hypotheses_concurrently(hypothesis_batch)
                             )
+                        except concurrent.futures.TimeoutError:
+                            logger.error(f"Hypothesis evaluation timed out after {timeout_seconds}s")
+                            raise Exception(f"Concurrent hypothesis evaluation timed out")
 
                         # Process best candidate(s)
                         for eval_result in evaluations:
@@ -1357,19 +1363,27 @@ Provide a structured, actionable plan in 2-3 paragraphs.
                     result_batch = results[-batch_size:]  # Most recent results
 
                     try:
-                        # Run async analysis
+                        # Run async analysis with timeout
+                        logger.info(f"Starting concurrent analysis of {len(result_batch)} results")
                         try:
                             # Check if there's already a running event loop
                             loop = asyncio.get_running_loop()
-                            # If we're already in an async context, run in thread
-                            analyses = asyncio.run_coroutine_threadsafe(
+                            # If we're already in an async context, use run_coroutine_threadsafe with timeout
+                            future = asyncio.run_coroutine_threadsafe(
                                 self.analyze_results_concurrently(result_batch), loop
-                            ).result()
+                            )
+                            # Add timeout to prevent indefinite blocking (5 minutes default)
+                            timeout_seconds = 300
+                            analyses = future.result(timeout=timeout_seconds)
+                            logger.info(f"Concurrent result analysis completed")
                         except RuntimeError:
                             # No running loop, use asyncio.run
                             analyses = asyncio.run(
                                 self.analyze_results_concurrently(result_batch)
                             )
+                        except concurrent.futures.TimeoutError:
+                            logger.error(f"Result analysis timed out after {timeout_seconds}s")
+                            raise Exception(f"Concurrent result analysis timed out")
 
                         # Process analyses and update hypotheses
                         for analysis in analyses:
@@ -1401,8 +1415,19 @@ Provide a structured, actionable plan in 2-3 paragraphs.
                     action="evaluate"
                 )
 
+            # Increment iteration after completing refinement phase
+            # This marks the completion of one full research cycle
+            with self._research_plan_context():
+                self.research_plan.increment_iteration()
+            logger.info(f"Completed iteration {self.research_plan.iteration_count}")
+
         elif action == NextAction.CONVERGE:
             self._send_to_convergence_detector()
+
+            # Increment iteration before checking convergence
+            with self._research_plan_context():
+                self.research_plan.increment_iteration()
+            logger.info(f"Checking convergence at iteration {self.research_plan.iteration_count}")
 
         elif action == NextAction.PAUSE:
             self.pause()

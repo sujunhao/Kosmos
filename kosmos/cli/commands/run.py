@@ -235,9 +235,32 @@ def run_with_progress(director, question: str, max_iterations: int) -> dict:
 
             # Research loop - execute until convergence or max iterations
             iteration = 0
+            loop_start_time = time.time()
+            max_loop_duration = 7200  # 2 hours max runtime
+
+            logger.info(f"Starting research loop (max_iterations={max_iterations})")
+
             while iteration < max_iterations:
+                # Check for timeout
+                elapsed_time = time.time() - loop_start_time
+                if elapsed_time > max_loop_duration:
+                    logger.error(f"Research loop timed out after {elapsed_time:.0f}s")
+                    print_error(
+                        f"Research loop exceeded maximum runtime of {max_loop_duration}s. "
+                        "This may indicate an infinite loop or hanging operation.",
+                        title="Timeout"
+                    )
+                    break
+
                 # Get current status
                 status = director.get_research_status()
+
+                # Log current state
+                logger.info(
+                    f"Loop iteration {iteration}: workflow_state={status.get('workflow_state')}, "
+                    f"iteration_count={status.get('iteration')}, "
+                    f"has_converged={status.get('has_converged')}"
+                )
 
                 # Update iteration progress
                 progress.update(iteration_task, completed=iteration + 1)
@@ -247,32 +270,44 @@ def run_with_progress(director, question: str, max_iterations: int) -> dict:
                 workflow_state = status.get("workflow_state", WorkflowState.INITIALIZING.value)
 
                 if workflow_state == WorkflowState.GENERATING_HYPOTHESES.value:
+                    logger.debug("Phase: Generating hypotheses")
                     progress.update(hypothesis_task, completed=50)
                 elif workflow_state == WorkflowState.DESIGNING_EXPERIMENTS.value:
+                    logger.debug("Phase: Designing experiments")
                     progress.update(hypothesis_task, completed=100)
                     progress.update(experiment_task, completed=50)
                 elif workflow_state == WorkflowState.EXECUTING.value:
+                    logger.debug("Phase: Executing experiments")
                     progress.update(experiment_task, completed=100)
                     progress.update(execution_task, completed=50)
                 elif workflow_state == WorkflowState.ANALYZING.value:
+                    logger.debug("Phase: Analyzing results")
                     progress.update(execution_task, completed=100)
                     progress.update(analysis_task, completed=50)
                 elif workflow_state in [WorkflowState.REFINING.value, WorkflowState.CONVERGED.value]:
+                    logger.debug(f"Phase: {workflow_state}")
                     progress.update(analysis_task, completed=100)
 
                 # Check for convergence
                 if status.get("has_converged", False):
+                    logger.info(f"Research converged: {status.get('convergence_reason')}")
                     progress.update(iteration_task, completed=max_iterations)
                     break
 
                 # Execute next research step
+                logger.debug("Executing next research step")
                 director.execute({"action": "step"})
 
-                # Update iteration counter
-                iteration = status.get("iteration", iteration)
+                # Update iteration counter from status
+                new_iteration = status.get("iteration", iteration)
+                if new_iteration != iteration:
+                    logger.info(f"Iteration advanced from {iteration} to {new_iteration}")
+                iteration = new_iteration
 
                 # Small delay to allow UI updates
                 time.sleep(0.05)
+
+            logger.info(f"Research loop completed after {iteration} iterations")
 
             # Mark all tasks as complete
             progress.update(hypothesis_task, completed=100)

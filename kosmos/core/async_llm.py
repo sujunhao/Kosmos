@@ -13,10 +13,26 @@ from dataclasses import dataclass, field
 from datetime import datetime
 
 try:
-    from anthropic import AsyncAnthropic
+    from anthropic import AsyncAnthropic, APIError, APITimeoutError, RateLimitError
     ASYNC_ANTHROPIC_AVAILABLE = True
 except ImportError:
     ASYNC_ANTHROPIC_AVAILABLE = False
+    APIError = Exception
+    APITimeoutError = Exception
+    RateLimitError = Exception
+
+# Import retry decorator
+try:
+    from tenacity import (
+        retry,
+        stop_after_attempt,
+        wait_exponential,
+        retry_if_exception_type,
+        before_sleep_log
+    )
+    TENACITY_AVAILABLE = True
+except ImportError:
+    TENACITY_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
 
@@ -245,19 +261,55 @@ class AsyncClaudeClient:
         await self.rate_limiter.acquire()
         start_time = time.time()
 
+        # Define timeout (2 minutes default)
+        timeout_seconds = 120
+
         try:
             # Build message
             messages = [{"role": "user", "content": prompt}]
 
-            # Call Claude API
-            response = await self.client.messages.create(
-                model=model_override or self.model,
-                max_tokens=max_tokens or self.max_tokens,
-                temperature=temperature or self.temperature,
-                system=system or "",
-                messages=messages,
-                stop_sequences=stop_sequences or []
-            )
+            # Call Claude API with timeout and retry logic
+            async def _api_call_with_retry():
+                """Inner function with retry decorator."""
+                # Apply retry logic if tenacity is available
+                if TENACITY_AVAILABLE:
+                    @retry(
+                        stop=stop_after_attempt(3),
+                        wait=wait_exponential(multiplier=1, min=2, max=30),
+                        retry=retry_if_exception_type((APIError, APITimeoutError, RateLimitError)),
+                        before_sleep=before_sleep_log(logger, logging.WARNING),
+                        reraise=True
+                    )
+                    async def _call():
+                        return await self.client.messages.create(
+                            model=model_override or self.model,
+                            max_tokens=max_tokens or self.max_tokens,
+                            temperature=temperature or self.temperature,
+                            system=system or "",
+                            messages=messages,
+                            stop_sequences=stop_sequences or []
+                        )
+                    return await _call()
+                else:
+                    # No retry if tenacity not available
+                    return await self.client.messages.create(
+                        model=model_override or self.model,
+                        max_tokens=max_tokens or self.max_tokens,
+                        temperature=temperature or self.temperature,
+                        system=system or "",
+                        messages=messages,
+                        stop_sequences=stop_sequences or []
+                    )
+
+            # Execute with timeout
+            try:
+                response = await asyncio.wait_for(
+                    _api_call_with_retry(),
+                    timeout=timeout_seconds
+                )
+            except asyncio.TimeoutError:
+                logger.error(f"LLM API call timed out after {timeout_seconds}s")
+                raise APITimeoutError(f"API call exceeded timeout of {timeout_seconds}s")
 
             # Update statistics
             self.total_requests += 1
@@ -292,6 +344,10 @@ class AsyncClaudeClient:
 
             return text
 
+        except (APIError, APITimeoutError, RateLimitError) as e:
+            self.failed_requests += 1
+            logger.error(f"Async generation failed after retries: {e}")
+            raise
         except Exception as e:
             self.failed_requests += 1
             logger.error(f"Async generation failed: {e}")
