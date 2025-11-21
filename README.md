@@ -3,30 +3,37 @@
 > Autonomous AI scientist for hypothesis generation, experimental design, and iterative scientific discovery. Supports Claude, OpenAI, and local models.
 
 [![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](https://github.com/jimmc414/Kosmos)
-[![Status](https://img.shields.io/badge/status-production-blue.svg)](https://github.com/jimmc414/Kosmos)
-[![Tests](https://img.shields.io/badge/tests-90%25%20coverage-blue.svg)](https://github.com/jimmc414/Kosmos)
+[![Status](https://img.shields.io/badge/status-e2e%20testing-yellow.svg)](https://github.com/jimmc414/Kosmos)
+[![Tests](https://img.shields.io/badge/tests-in%20development-yellow.svg)](https://github.com/jimmc414/Kosmos)
 [![Performance](https://img.shields.io/badge/performance-20--40×%20faster-blue.svg)](https://github.com/jimmc414/Kosmos)
 
-Kosmos is an open-source implementation of an autonomous AI scientist that can conduct complete research cycles: from literature analysis and hypothesis generation through experimental design, execution, analysis, and iterative refinement.
+Kosmos is an open-source implementation of an autonomous AI scientist that conducts research cycles: literature analysis, hypothesis generation, experimental design, execution, analysis, and iterative refinement.
 
-**v0.2.0 Multi-Provider Release** - Now supports Anthropic Claude, OpenAI GPT, and local models (Ollama, LM Studio) with configuration-driven provider switching. Includes 20-40× performance improvements, comprehensive testing, and production deployment support.
+v0.2.0 supports Anthropic Claude, OpenAI GPT, and local models (Ollama, LM Studio) with configuration-driven provider switching. Performance optimizations (20-40x in specific operations) and multi-domain capabilities are implemented.
 
-## Production Status
+## Development Status
 
-Kosmos is **production-ready** (v0.2.0) with all 10 development phases complete:
+Kosmos v0.2.0 is in end-to-end testing phase, working toward production readiness.
 
-- ✅ **90%+ test coverage** - Comprehensive test suite across all components
-- ✅ **20-40× performance improvements** - Parallel execution, caching, optimization
-- ✅ **Complete research cycle** - Literature analysis → hypothesis → experiments → analysis → iteration
-- ✅ **Multi-domain support** - Biology, neuroscience, physics, chemistry, materials science
-- ✅ **Production deployment** - Docker, Kubernetes, health monitoring, Prometheus metrics
-- ✅ **10,000+ lines of documentation** - User guides, API docs, deployment guides, examples
+Current state:
+- All 10 development phases implemented
+- Core autonomous research workflow functional
+- Advanced analytics added (SHAP, pathway enrichment, segmented regression)
+- Known issues under investigation ([#7](https://github.com/jimmc414/Kosmos/issues/7), [#11](https://github.com/jimmc414/Kosmos/issues/11))
+- Requirements Traceability Matrix in development
+- Test coverage being expanded systematically
 
-**Successfully handles autonomous research cycles from question to validated findings.**
+Implementation status:
+- Core infrastructure: Operational
+- Data Analysis Agent: Functional, new methods added
+- Literature Search Agent: Functional, citation graphs implemented
+- World Model: Functional, Neo4j-dependent features require configuration
+- Orchestrator: Functional, convergence detection operational
+- Multi-domain support: Biology, neuroscience, physics, chemistry, materials science
 
-**[View Phase Completion Reports](docs/phase-reports/) | [Implementation Plan](IMPLEMENTATION_PLAN.md)**
+[View Phase Completion Reports](docs/phase-reports/) | [Implementation Plan](IMPLEMENTATION_PLAN.md)
 
-## Features (Production Ready)
+## Implemented Features
 
 ### Core Capabilities
 - **Autonomous Research Cycle**: Complete end-to-end scientific workflow
@@ -49,7 +56,7 @@ Kosmos now supports multiple LLM providers, giving you flexibility in cost, priv
 | **OpenRouter** | Aggregator | 100+ models | Cloud | Varies |
 | **LM Studio** | Local | Any GGUF model | **Private** | **Free** |
 
-**Switch providers with zero code changes** - just update your `.env` file:
+Provider switching requires only `.env` configuration changes:
 
 ```bash
 # Use OpenAI instead of Anthropic
@@ -63,40 +70,39 @@ OPENAI_BASE_URL=http://localhost:11434/v1
 OPENAI_MODEL=llama3.1:70b
 ```
 
-**Benefits:**
-- **Cost Flexibility**: Mix expensive/cheap models or use free local models
-- **Privacy Options**: Run entirely locally for sensitive research
-- **Provider Independence**: Switch based on availability, pricing, performance
-- **Redundancy**: Mitigate rate limits and service disruptions
-- **Access Specialized Models**: Domain-specific or fine-tuned models
+Provider flexibility enables:
+- Cost optimization through model mixing or local execution
+- Privacy preservation via local-only operation
+- Provider independence for availability and pricing management
+- Rate limit mitigation through redundancy
+- Access to domain-specific or fine-tuned models
 
-**[Provider Setup Guide](docs/providers/README.md)** - Detailed instructions for all supported providers
+[Provider Setup Guide](docs/providers/README.md) provides configuration details for all supported providers.
 
 ### Persistent Knowledge Graphs
 
-Kosmos maintains a **persistent knowledge graph** that automatically captures your entire research journey. Every hypothesis, experiment, and finding is stored in a connected graph that survives between sessions.
+Kosmos maintains a persistent knowledge graph that captures the research process. Hypotheses, experiments, and findings are stored in a connected graph structure that persists across sessions.
 
-**What Gets Captured:**
+Captured data:
 - Research questions and hypotheses
 - Experiment protocols and results
 - Relationships (SPAWNED_BY, TESTS, SUPPORTS, REFUTES, REFINED_FROM)
 - Rich provenance (who, when, why, confidence scores, p-values)
 
-**Key Benefits:**
-- **Knowledge Accumulation**: Build expertise over weeks/months instead of starting fresh
-- **Research Provenance**: Track how hypotheses evolved and what evidence supports them
-- **Collaboration**: Export and share knowledge graphs with colleagues
-- **Version Control**: Save snapshots at research milestones
-- **Data Safety**: Regular exports protect against data loss
+Knowledge graph features:
+- Knowledge accumulation over extended periods
+- Research provenance tracking (hypothesis evolution, supporting evidence)
+- Export and import for collaboration and backup
+- Snapshot capability for version control at research milestones
 
-**CLI Commands:**
+CLI commands:
 
 ```bash
-# View your accumulated knowledge
+# View accumulated knowledge
 kosmos graph --stats
 
 # Example output:
-# 📊 Knowledge Graph Statistics
+# Knowledge Graph Statistics
 #
 # Entities:        127
 # Relationships:   243
@@ -113,28 +119,26 @@ kosmos graph --export my_research.json
 kosmos graph --import my_research.json
 ```
 
-**Automatic Persistence:**
-
-No manual action required! When you run research:
+Automatic persistence operates without manual intervention. When executing research queries:
 
 ```bash
 kosmos research "How do transformers learn long-range dependencies?"
 ```
 
-Kosmos **automatically** persists:
+The system persists:
 - ResearchQuestion entity
 - Generated Hypothesis entities + SPAWNED_BY relationships
 - ExperimentProtocol entities + TESTS relationships
 - ExperimentResult entities + SUPPORTS/REFUTES relationships with statistical metadata
 - Refined hypotheses + REFINED_FROM relationships
 
-**Setup:**
+Setup:
 
 ```bash
-# Using Docker (recommended)
+# Docker deployment
 docker-compose up -d neo4j
 
-# Or manual Neo4j installation
+# Manual Neo4j installation
 # Ubuntu: sudo apt install neo4j
 # macOS: brew install neo4j
 
@@ -144,38 +148,37 @@ NEO4J_PASSWORD=kosmos-password
 WORLD_MODEL_ENABLED=true
 ```
 
-**Works Without Neo4j:**
-Kosmos continues working normally if Neo4j is unavailable (graceful degradation). Graph features are optional enhancements.
+The system operates without Neo4j through graceful degradation. Graph features are optional.
 
-**[Complete Guide](docs/user/world_model_guide.md)** - Detailed documentation with use cases, advanced queries, and best practices
+[Complete Guide](docs/user/world_model_guide.md) provides detailed documentation including use cases, queries, and configuration.
 
 ### Performance & Scalability
-- **20-40× Overall Performance**: Combined optimizations for significant speedup
-- **Parallel Execution**: 4-16× faster experiments via ProcessPoolExecutor
-- **Concurrent Operations**: 2-4× faster research cycles with async operations
-- **Smart Caching**: Multi-tier caching reducing API costs by 30%+
-- **Database Optimization**: 10× faster queries with strategic indexes
-- **Auto-Scaling**: Kubernetes HorizontalPodAutoscaler support
+- 20-40x performance improvement in specific operations through combined optimizations
+- Parallel execution via ProcessPoolExecutor (4-16x faster experiments)
+- Concurrent operations using async patterns (2-4x faster research cycles)
+- Multi-tier caching system (30%+ API cost reduction)
+- Database query optimization through strategic indexing
+- Kubernetes HorizontalPodAutoscaler support for scaling
 
-### Production Features
-- **Health Monitoring**: Prometheus metrics, alerts (email/Slack/PagerDuty)
-- **Performance Profiling**: CPU, memory, bottleneck detection
-- **Docker Deployment**: Complete docker-compose stack with all services
-- **Kubernetes Ready**: 8 manifests for production deployment
-- **Cloud Support**: Deployment guides for AWS, GCP, Azure
-- **Comprehensive Testing**: 90%+ test coverage across all components
+### Deployment Features
+- Health monitoring via Prometheus metrics with configurable alerts
+- Performance profiling for CPU, memory, and bottleneck detection
+- Docker deployment through docker-compose with multi-service stack
+- Kubernetes manifests for orchestrated deployment
+- Cloud deployment documentation for AWS, GCP, Azure
+- Test suite under active development (requirements traceability matrix in progress)
 
-### Developer Experience
-- **Flexible Integration**: Supports Anthropic Claude, OpenAI GPT, and local models (Ollama, LM Studio)
-- **Proven Analysis Patterns**: Integrates battle-tested statistical methods
-- **Literature Integration**: Automated paper search, summarization, and novelty checking
-- **Rich Documentation**: 10,000+ lines across user guides, API docs, and examples
+### Integration Capabilities
+- Multiple LLM provider support (Anthropic Claude, OpenAI GPT, local models via Ollama/LM Studio)
+- Statistical analysis methods from validated patterns
+- Automated literature search, summarization, and novelty checking
+- Comprehensive documentation across user guides, API references, and examples
 
 ## Performance & Optimization
 
-### Intelligent Caching System
+### Caching System
 
-Kosmos includes a sophisticated multi-tier caching system that reduces API costs by **30-40%**:
+Kosmos implements a multi-tier caching system that reduces API costs by 30-40%:
 
 ```bash
 # View cache performance
@@ -188,19 +191,19 @@ kosmos cache --stats
 #   Estimated Cost Savings: $15.75
 ```
 
-**Cache Types**:
-- **LLM Response Cache**: API response caching (25-35% hit rate with Anthropic prompt caching)
-- **Experiment Cache**: Computational result caching (40-50% hit rate)
-- **Embedding Cache**: Vector embedding caching (in-memory, fast)
-- **General Cache**: Miscellaneous data caching
+Cache types:
+- LLM Response Cache: API response caching (25-35% hit rate with Anthropic prompt caching)
+- Experiment Cache: Computational result caching (40-50% hit rate)
+- Embedding Cache: Vector embedding caching (in-memory)
+- General Cache: Miscellaneous data caching
 
-**Benefits**:
-- Reduced API costs (30%+ savings)
-- Faster response times (90%+ faster on cache hits)
-- Improved reliability (cached responses always available)
-- Lower environmental impact
+Benefits:
+- API cost reduction (30%+ savings observed)
+- Faster response times (90%+ improvement on cache hits)
+- Availability through cached responses
+- Reduced compute resource usage
 
-**Note:** Prompt caching with significant cost savings is currently available when using Anthropic Claude. OpenAI and local providers use in-memory response caching only.
+Note: Prompt caching with substantial cost savings is available when using Anthropic Claude. OpenAI and local providers use in-memory response caching only.
 
 ### Automatic Model Selection (Anthropic Only)
 
@@ -209,38 +212,38 @@ When using Anthropic as your LLM provider, Kosmos intelligently selects between 
 - **Claude Sonnet 4.5**: Complex reasoning, hypothesis generation, analysis
 - **Claude Haiku 4**: Simple tasks, data extraction, formatting
 
-This reduces costs by **15-20%** while maintaining quality.
+This reduces costs by 15-20% while maintaining output quality.
 
-**Note:** This feature is specific to Anthropic Claude. OpenAI and other providers use a single configured model.
+Note: This feature is specific to Anthropic Claude. OpenAI and other providers use a single configured model.
 
 ### Expected Performance
 
 Typical research run characteristics (using Anthropic Claude):
 
-- **Duration**: 30 minutes to 2 hours
-- **Iterations**: 5-15 iterations
-- **API Calls**: 50-200 calls
-- **Cost**: $5-$50 with caching (without caching: $8-$75) **[Anthropic pricing]**
-- **Cache Hit Rate**: 30-40% on subsequent runs **[Anthropic prompt caching]**
+- Duration: 30 minutes to 2 hours
+- Iterations: 5-15 iterations
+- API Calls: 50-200 calls
+- Cost: $5-$50 with caching, $8-$75 without (Anthropic pricing)
+- Cache Hit Rate: 30-40% on subsequent runs (Anthropic prompt caching)
 
-**Note:** Costs vary by provider. OpenAI pricing may differ. Local models (Ollama/LM Studio) have $0 API costs.
+Note: Costs vary by provider. OpenAI pricing differs. Local models (Ollama/LM Studio) have no API costs.
 
 ## Quick Start
 
 ### Prerequisites
 
 - Python 3.11 or 3.12
-- **LLM Provider** - Choose one:
-  - **Anthropic Claude** (default) - API key (pay-per-use) or Claude Code CLI (Max subscription)
-  - **OpenAI GPT** - API key for GPT models
-  - **Ollama** - Free local models (no API key needed)
-  - **Other providers** - See [Provider Setup Guide](docs/providers/README.md)
+- LLM Provider (choose one):
+  - Anthropic Claude (default): API key (pay-per-use) or Claude Code CLI (Max subscription)
+  - OpenAI GPT: API key for GPT models
+  - Ollama: Local models (no API key required)
+  - Other providers: See [Provider Setup Guide](docs/providers/README.md)
 
 ### Installation
 
-#### Option A: Automated Setup (Recommended)
+#### Option A: Automated Setup
 
-The fastest way to get started - one command does everything:
+Single-command installation handling all setup steps:
 
 ```bash
 # Clone the repository
@@ -256,14 +259,14 @@ make install
 ./scripts/setup_neo4j.sh        # Setup Neo4j for knowledge graphs
 ```
 
-**What it does:**
-- ✓ Checks Python 3.11+ is installed
-- ✓ Creates virtual environment
-- ✓ Installs all dependencies
-- ✓ Creates .env from template
-- ✓ Sets up data directories
-- ✓ Runs database migrations
-- ✓ Verifies installation
+Automated setup performs:
+- Python 3.11+ version check
+- Virtual environment creation
+- Dependency installation
+- .env file creation from template
+- Data directory initialization
+- Database migrations
+- Installation verification
 
 See [Automated Setup Guide](docs/user/automated-setup.md) for details.
 
@@ -336,11 +339,11 @@ Confirm your installation is working correctly:
 kosmos doctor
 
 # Expected output:
-# ✓ Python version 3.11+ detected
-# ✓ All required packages installed
-# ✓ API key configured (Anthropic/OpenAI)
-# ✓ Database accessible
-# ✓ Cache directory writable
+# Python version 3.11+ detected
+# All required packages installed
+# API key configured (Anthropic/OpenAI)
+# Database accessible
+# Cache directory writable
 
 # View version and configuration
 kosmos version
@@ -357,11 +360,11 @@ kosmos info
 # Shows configuration, cache status, API key status, enabled domains
 ```
 
-If all checks pass, you're ready to run research!
+System is operational when all checks pass.
 
 ### Run Your First Research Project
 
-#### Using the CLI (Recommended)
+#### Using the CLI
 
 ```bash
 # Interactive mode with guided prompts
@@ -770,64 +773,64 @@ docs/
 
 ## Development History
 
-Kosmos was developed in 10 comprehensive phases from November 2024 to production release in January 2025:
+Kosmos was developed in 10 phases from November 2024, currently in end-to-end testing:
 
-### ✅ Phase 0-1: Foundation (Complete)
+### Phase 0-1: Foundation
 - Project structure and repository setup
 - Claude integration (API + CLI routing)
 - Configuration system with Pydantic validation
 - Agent framework and base classes
 - Database setup (SQLite/PostgreSQL with Alembic migrations)
 
-### ✅ Phase 2: Knowledge & Literature (Complete)
+### Phase 2: Knowledge & Literature
 - Literature APIs: arXiv, Semantic Scholar, PubMed integration
 - Literature analyzer agent with citation tracking
 - Vector database (ChromaDB) for semantic search
 - Neo4j knowledge graph for concept relationships
 
-### ✅ Phase 3: Hypothesis Generation (Complete)
+### Phase 3: Hypothesis Generation
 - Hypothesis generator agent powered by Claude Sonnet 4
 - Novelty checking against existing literature
 - Hypothesis prioritization and ranking
 
-### ✅ Phase 4: Experimental Design (Complete)
+### Phase 4: Experimental Design
 - Experiment designer agent for protocol generation
 - Validated experiment templates from kosmos-figures
 - Resource estimation and feasibility analysis
 
-### ✅ Phase 5: Execution (Complete)
+### Phase 5: Execution
 - Sandboxed execution environment with Docker
-- Full integration of kosmos-figures analysis patterns
-- Statistical analysis with proven methods (t-tests, ANOVA, regression, etc.)
+- Integration of kosmos-figures analysis patterns
+- Statistical analysis methods (t-tests, ANOVA, regression)
 
-### ✅ Phase 6: Analysis & Interpretation (Complete)
+### Phase 6: Analysis & Interpretation
 - Data analyst agent for result interpretation
 - Automated visualization generation (matplotlib, seaborn, plotly)
 - Result summarization and insight extraction
 
-### ✅ Phase 7: Iterative Learning (Complete)
-- Research director agent orchestrating complete workflow
+### Phase 7: Iterative Learning
+- Research director agent orchestrating workflow
 - Feedback loops for hypothesis refinement
 - Convergence detection and stopping criteria
 
-### ✅ Phase 8: Safety & Validation (Complete)
+### Phase 8: Safety & Validation
 - Safety validation and code analysis
 - Sandboxing and execution limits
 - Reproducibility checks and validation
 
-### ✅ Phase 9: Multi-Domain Support (Complete)
+### Phase 9: Multi-Domain Support
 - Domain-specific tools: Biology, neuroscience, physics, chemistry, materials science
 - API integrations: KEGG, UniProt, Materials Project, FlyWire
 - Domain-specific experiment templates
 
-### ✅ Phase 10: Production Ready (Complete)
-- 90%+ test coverage across all components
-- 20-40× performance improvements (parallel execution, caching, optimization)
+### Phase 10: Testing & Deployment
+- Test suite development (requirements traceability matrix in progress)
+- Performance optimizations (20-40x in specific operations: parallel execution, caching)
 - Docker and Kubernetes deployment infrastructure
 - Health monitoring with Prometheus metrics
-- 10,000+ lines of comprehensive documentation
+- Documentation across user guides, API references, deployment procedures
 
-**[View Detailed Phase Reports](docs/phase-reports/) | [Implementation Plan](IMPLEMENTATION_PLAN.md)**
+[View Detailed Phase Reports](docs/phase-reports/) | [Implementation Plan](IMPLEMENTATION_PLAN.md)
 
 ## Based On
 
@@ -838,7 +841,7 @@ This project is inspired by:
 
 ## Contributing
 
-Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+Contributions are accepted. See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ### Areas We Need Help
 
@@ -892,7 +895,7 @@ docker-compose restart neo4j postgres redis
 kosmos doctor
 ```
 
-**Note**: Minor warnings about missing indexes are normal and don't block functionality.
+Note: Minor warnings about missing indexes are expected and do not block functionality. See issues [#7](https://github.com/jimmc414/Kosmos/issues/7) and [#11](https://github.com/jimmc414/Kosmos/issues/11) for known database-related issues.
 
 ### "Sandbox errors" When Running Experiments
 
@@ -948,9 +951,9 @@ pip list | grep -E "shap|gseapy|pwlf|nbformat"
 
 ### More Help
 
-- 📖 **New users**: See [Quick Start Guide](docs/setup/QUICK_START.md)
-- 🔄 **Upgrading**: See [Upgrade Guide](docs/setup/UPGRADE_GUIDE.md)
-- 🐛 **Found a bug**: Open an [issue](https://github.com/jimmc414/Kosmos/issues) with `kosmos doctor` output
+- New users: See [Quick Start Guide](docs/setup/QUICK_START.md)
+- Upgrading: See [Upgrade Guide](docs/setup/UPGRADE_GUIDE.md)
+- Bug reports: Open an [issue](https://github.com/jimmc414/Kosmos/issues) with `kosmos doctor` output and known issues ([#7](https://github.com/jimmc414/Kosmos/issues/7), [#11](https://github.com/jimmc414/Kosmos/issues/11))
 
 ## Support
 
@@ -959,21 +962,23 @@ pip list | grep -E "shap|gseapy|pwlf|nbformat"
 
 ---
 
-**Version**: v0.2.0 (Production Ready)
-**Development**: All 10 phases complete (Phase 0-10)
-**Status**: Production deployment ready
-**Test Coverage**: 90%+
-**Performance**: 20-40× faster than baseline
-**Release Date**: 2025-11-13
+Version: v0.2.0
+Development: All 10 phases implemented (Phase 0-10)
+Status: End-to-end testing, pre-production validation
+Test Coverage: Under development (requirements traceability matrix in progress)
+Performance: 20-40x improvement in specific operations relative to baseline
+Release Date: 2025-11-13
 
-**Recent Milestones**:
-- ✅ **Phase 10 Complete** - All 35 production readiness tasks complete
-- ✅ **Multi-provider support** - Anthropic, OpenAI, Ollama, OpenRouter, LM Studio
-- ✅ **Production infrastructure** - Docker, Kubernetes, health monitoring, Prometheus metrics
-- ✅ **Comprehensive testing** - 90%+ test coverage across all components
-- ✅ **Performance optimization** - 20-40× improvement (parallel execution, caching, optimization)
-- ✅ **Full documentation** - 10,000+ lines (user guides, API docs, deployment guides)
+Recent milestones:
+- Phase 10 implementation tasks completed
+- Multi-provider support implemented (Anthropic, OpenAI, Ollama, OpenRouter, LM Studio)
+- Deployment infrastructure implemented (Docker, Kubernetes, health monitoring, Prometheus metrics)
+- Test suite expansion in progress
+- Performance optimizations deployed (parallel execution, caching, optimization)
+- Documentation completed (user guides, API references, deployment procedures)
 
-**[View All Phase Reports](docs/phase-reports/) | [Implementation Plan](IMPLEMENTATION_PLAN.md)**
+Known issues being addressed: [#7](https://github.com/jimmc414/Kosmos/issues/7), [#11](https://github.com/jimmc414/Kosmos/issues/11)
 
-**Last Updated**: 2025-11-13
+[View All Phase Reports](docs/phase-reports/) | [Implementation Plan](IMPLEMENTATION_PLAN.md)
+
+Last Updated: 2025-11-20
