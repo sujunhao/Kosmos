@@ -8,17 +8,17 @@
 
 ## Executive Summary
 
-After thorough analysis of all 24 markdown files in the root directory, this plan recommends:
+After thorough analysis of all 31 markdown files in the root directory, this plan recommends:
 
-- **Keep in Root**: 6 files (essential, active documentation)
-- **Move to Archive**: 16 files (historical/completed work)
+- **Keep in Root**: 8 files (essential, active documentation)
+- **Move to Archive**: 21 files (historical/completed work)
 - **Move to docs/**: 2 files (reference documentation)
 
 ---
 
 ## File Analysis
 
-### Category 1: Essential Files to KEEP in Root (6 files)
+### Category 1: Essential Files to KEEP in Root (8 files)
 
 These files are actively used, frequently updated, or essential for project understanding:
 
@@ -26,14 +26,16 @@ These files are actively used, frequently updated, or essential for project unde
 |------|---------|---------------|
 | `README.md` | Main project documentation | Primary entry point for users, actively maintained |
 | `CHANGELOG.md` | Version history | Standard project file, tracks ongoing changes |
+| `CLAUDE.md` | Claude Code instructions | Project configuration for AI assistance |
 | `GETTING_STARTED.md` | User onboarding guide | Essential for new users, references current setup |
 | `REQUIREMENTS.md` | Living requirements spec | Active specification document (v1.4) |
 | `E2E_TESTING_GUIDE.md` | Testing instructions | Practical guide for running tests |
+| `KOSMOS_E2E_CHEATSHEET.md` | E2E testing quick reference | Practical cheatsheet for test commands |
 | `TESTS_STATUS.md` | Current test status | Dated 2025-11-25, tracks current test state |
 
 ---
 
-### Category 2: Files to ARCHIVE (16 files)
+### Category 2: Files to ARCHIVE (21 files)
 
 These files document completed work, historical prompts, or superseded planning documents:
 
@@ -72,6 +74,20 @@ These files document completed work, historical prompts, or superseded planning 
 |------|-------------------|
 | `PRODUCTION_PLAN.md` | Superseded by actual production deployment |
 | `PRODUCTION_READINESS_REPORT.md` | Template/guide, not a completed report |
+
+#### Subcategory 2E: Issue Analysis (1 file)
+
+| File | Date | Status | Reason for Archive |
+|------|------|--------|-------------------|
+| `issue_6_analysis.md` | 2025-11-24 | Complete | Issue #6 analysis - bug fixed in dfcdea2 |
+
+#### Subcategory 2F: Requirements Analysis (3 files)
+
+| File | Purpose | Reason for Archive |
+|------|---------|-------------------|
+| `req_to_paper_analysis_1.md` | Paper-to-requirements validation prompt | Historical analysis work completed |
+| `req_to_paper_analysis_2.md` | Paper-to-requirements validation prompt | Historical analysis work completed |
+| `req_to_paper_analysis_3.md` | Paper-to-requirements validation prompt | Historical analysis work completed |
 
 ---
 
@@ -112,9 +128,17 @@ archive/
 ├── reports/
 │   └── CODE_REVIEW_REPORT_1125.md
 │
-└── planning/
-    ├── PRODUCTION_PLAN.md
-    └── PRODUCTION_READINESS_REPORT.md
+├── planning/
+│   ├── PRODUCTION_PLAN.md
+│   └── PRODUCTION_READINESS_REPORT.md
+│
+├── issues/
+│   └── issue_6_analysis.md
+│
+└── analysis/
+    ├── req_to_paper_analysis_1.md
+    ├── req_to_paper_analysis_2.md
+    └── req_to_paper_analysis_3.md
 ```
 
 ---
@@ -130,6 +154,8 @@ mkdir -p archive/prompts
 mkdir -p archive/checklists
 mkdir -p archive/reports
 mkdir -p archive/planning
+mkdir -p archive/issues
+mkdir -p archive/analysis
 
 # Move implementation history files
 mv IMPLEMENTATION_PLAN.md archive/implementation/
@@ -157,28 +183,35 @@ mv CODE_REVIEW_REPORT_1125.md archive/reports/
 mv PRODUCTION_PLAN.md archive/planning/
 mv PRODUCTION_READINESS_REPORT.md archive/planning/
 
+# Move issue analysis files
+mv issue_6_analysis.md archive/issues/
+
+# Move requirements analysis files
+mv req_to_paper_analysis_1.md archive/analysis/
+mv req_to_paper_analysis_2.md archive/analysis/
+mv req_to_paper_analysis_3.md archive/analysis/
+
 # Move reference docs to docs/
 mkdir -p docs
 mv REQUIREMENTS_TRACEABILITY_MATRIX.md docs/
 mv REVIEW.md docs/
-
-# Update .gitignore if needed (archive should be tracked)
-echo "# Archive is tracked for historical reference" >> .gitignore
 ```
 
 ---
 
 ## Post-Cleanup Root Directory
 
-After cleanup, the root directory will contain only 6 essential files:
+After cleanup, the root directory will contain only 8 essential files:
 
 ```
 /home/user/Kosmos/
 ├── CHANGELOG.md              # Version history
+├── CLAUDE.md                 # Claude Code instructions
 ├── GETTING_STARTED.md        # User onboarding
 ├── README.md                 # Main documentation
 ├── REQUIREMENTS.md           # Requirements spec (v1.4)
 ├── E2E_TESTING_GUIDE.md      # Testing guide
+├── KOSMOS_E2E_CHEATSHEET.md  # E2E testing quick reference
 ├── TESTS_STATUS.md           # Current test status
 ├── document_cleanup_plan.md  # This plan (can be archived after execution)
 │
@@ -187,7 +220,9 @@ After cleanup, the root directory will contain only 6 essential files:
 │   ├── prompts/              # 4 files
 │   ├── checklists/           # 3 files
 │   ├── reports/              # 1 file
-│   └── planning/             # 2 files
+│   ├── planning/             # 2 files
+│   ├── issues/               # 1 file
+│   └── analysis/             # 3 files
 │
 └── docs/                     # Reference documentation
     ├── REQUIREMENTS_TRACEABILITY_MATRIX.md
@@ -212,25 +247,37 @@ After cleanup, the root directory will contain only 6 essential files:
 - **Dependencies**: Standard project file
 - **Decision**: KEEP - Industry standard, tracks changes
 
-#### 3. GETTING_STARTED.md
+#### 3. CLAUDE.md
+- **Content**: Project-specific instructions for Claude Code AI assistant
+- **Last Updated**: Active
+- **Dependencies**: Used by Claude Code for project context
+- **Decision**: KEEP - Essential for AI-assisted development
+
+#### 4. GETTING_STARTED.md
 - **Content**: Quick start guide, environment setup, first run instructions
 - **Last Updated**: Recent
 - **Dependencies**: Referenced from README
 - **Decision**: KEEP - Essential for onboarding
 
-#### 4. REQUIREMENTS.md
+#### 5. REQUIREMENTS.md
 - **Content**: 293 requirements specification (v1.4)
 - **Last Updated**: 2025-11-XX
 - **Dependencies**: Test generation, compliance tracking
 - **Decision**: KEEP - Living specification document
 
-#### 5. E2E_TESTING_GUIDE.md
+#### 6. E2E_TESTING_GUIDE.md
 - **Content**: End-to-end testing instructions, Docker setup
 - **Last Updated**: Recent
 - **Dependencies**: Test execution workflows
 - **Decision**: KEEP - Active testing reference
 
-#### 6. TESTS_STATUS.md
+#### 7. KOSMOS_E2E_CHEATSHEET.md
+- **Content**: Quick reference commands for E2E testing
+- **Last Updated**: Recent
+- **Dependencies**: E2E testing workflows, Claude Code skill
+- **Decision**: KEEP - Practical quick reference for testing
+
+#### 8. TESTS_STATUS.md
 - **Content**: Test suite status report (339 tests)
 - **Last Updated**: 2025-11-25
 - **Dependencies**: CI/CD, development workflow
@@ -340,6 +387,31 @@ After cleanup, the root directory will contain only 6 essential files:
 - **Value**: Potential future reference
 - **Decision**: ARCHIVE/planning - Can be referenced if needed
 
+#### issue_6_analysis.md
+- **Content**: Detailed analysis of Issue #6 (Ollama stalling bug)
+- **Date**: 2025-11-24
+- **Status**: Complete - bug fixed in commit dfcdea2
+- **Value**: Historical debugging reference
+- **Decision**: ARCHIVE/issues - Issue resolved
+
+#### req_to_paper_analysis_1.md
+- **Content**: Prompt for validating requirements against Kosmos paper
+- **Status**: Analysis work completed
+- **Value**: Historical analysis methodology
+- **Decision**: ARCHIVE/analysis - Analysis complete
+
+#### req_to_paper_analysis_2.md
+- **Content**: Prompt for validating requirements against Kosmos paper
+- **Status**: Analysis work completed
+- **Value**: Historical analysis methodology
+- **Decision**: ARCHIVE/analysis - Analysis complete
+
+#### req_to_paper_analysis_3.md
+- **Content**: Prompt for validating requirements against Kosmos paper
+- **Status**: Analysis work completed
+- **Value**: Historical analysis methodology
+- **Decision**: ARCHIVE/analysis - Analysis complete
+
 ---
 
 ### Files to Move to docs/ - Detailed Justification
@@ -379,7 +451,7 @@ After executing the cleanup:
 
 1. **Verify file moves**:
    ```bash
-   ls -la *.md  # Should show only 6-7 files
+   ls -la *.md  # Should show only 8-9 files
    ls -la archive/  # Should show subdirectories
    ls -la docs/  # Should show 2 files
    ```
@@ -406,10 +478,10 @@ After executing the cleanup:
 
 | Category | Count | Percentage |
 |----------|-------|------------|
-| Keep in Root | 6 | 25% |
-| Archive | 16 | 67% |
-| Move to docs/ | 2 | 8% |
-| **Total** | **24** | **100%** |
+| Keep in Root | 8 | 26% |
+| Archive | 21 | 68% |
+| Move to docs/ | 2 | 6% |
+| **Total** | **31** | **100%** |
 
 ---
 
