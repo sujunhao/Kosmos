@@ -10,7 +10,7 @@ from unittest.mock import patch
 
 from kosmos.literature.unified_search import UnifiedLiteratureSearch
 from kosmos.knowledge.embeddings import PaperEmbedder
-from kosmos.knowledge.vector_db import VectorDatabase
+from kosmos.knowledge.vector_db import PaperVectorDB as VectorDatabase
 from kosmos.knowledge.graph import KnowledgeGraph
 from kosmos.knowledge.concept_extractor import ConceptExtractor
 from kosmos.knowledge.graph_builder import GraphBuilder
